@@ -4,7 +4,7 @@ import { UI } from 'shared';
 export const Home = memo(() => {
   return (
     <UI.Content>
-      <h1>Wellcome to my awesome bank</h1>
+      <h1>Wellcome to my awesome _Bank</h1>
     </UI.Content>
   );
 });

@@ -2,17 +2,19 @@ import { FC } from 'react';
 import cn from 'classnames';
 import styles from './list.module.css';
 import { Link } from 'react-router-dom';
-import { formatDate } from '../common/date';
+import { date } from 'shared/lib/helpers';
 
 export const Row: FC<{
   id: number;
   info: string;
-  date: Date;
+  transactionDate: Date;
   amount: number;
   currency: string;
-}> = ({ id, info, date, amount, currency }) => (
+}> = ({ id, info, transactionDate, amount, currency }) => (
   <tr className={styles.table_row}>
-    <td className={cn(styles.table_column)}>{formatDate(date)}</td>
+    <td className={cn(styles.table_column)}>
+      {date.format(transactionDate)}
+    </td>
     <td className={styles.table_column}>
       <div className={styles.table__info}>
         <Link

@@ -1,11 +1,14 @@
+import { User } from 'domains';
 import { FC } from 'react';
 import styles from './account.module.css';
 
-export const Account: FC<{ text: string }> = ({ text }) => {
+export const Account: FC<{ user: User.Typings.User }> = ({
+  user,
+}) => {
   return (
     <div className={styles.root}>
       <div className={styles.user}>
-        <span>{text}</span>
+        <span>{user.fullName}</span>
         <svg
           viewBox="0 0 40 40"
           fill="none"

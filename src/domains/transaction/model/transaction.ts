@@ -4,7 +4,6 @@ import {
   createEffect,
   createEvent,
 } from 'effector';
-import { debounce } from 'patronum';
 import { api } from 'shared';
 import { Transaction } from '../typings';
 
@@ -30,7 +29,7 @@ const $store = createStore<{
   .reset(reset);
 
 sample({
-  source: debounce({ source: fetch, timeout: 200 }),
+  source: fetch,
   target: fetchTransactionFx,
 });
 

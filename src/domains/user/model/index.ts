@@ -1,33 +1,30 @@
-import {
-  sample,
-  createStore,
-  createEffect,
-} from 'effector';
+import { sample, createStore, createEffect } from 'effector';
 import { createGate } from 'effector-react';
 import { api } from 'shared';
 import { User } from '../typings';
 
-const EMPTY_USER: User = {
-  fullName: '',
-  cardAccount: -1,
-};
-
 const userGate = createGate();
 const fetchUserFx = createEffect(() => {
   // TODO some auth logick
-  return api.post<User>('/user');
+  return api.post<User>('/user').then((user) => {
+    api.setToken(user.cardAccount);
+    return user;
+  });
 });
 
-const $user = createStore<User>(EMPTY_USER).on(
-  fetchUserFx.doneData,
-  (_, user) => user
-);
+const $store = createStore<{ loading: boolean; user: User | null }>({
+  user: null,
+  loading: false,
+})
+  .on(fetchUserFx, (state) => ({ ...state, loading: true }))
+  .on(fetchUserFx.doneData, (_, user) => ({
+    user,
+    loading: false,
+  }));
 
 sample({
   clock: userGate.open,
   target: fetchUserFx,
 });
 
-const isUserLoading = (user) => user.cardAccount < 0;
-
-export { userGate, $user, isUserLoading };
+export { userGate, $store };

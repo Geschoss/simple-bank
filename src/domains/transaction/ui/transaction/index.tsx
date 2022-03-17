@@ -2,6 +2,7 @@ import { FC, useEffect } from 'react';
 import cn from 'classnames';
 import { useStore } from 'effector-react';
 import { Model } from 'domains/transaction';
+import { date } from 'shared/lib/helpers';
 import styles from './transaction.module.css';
 
 export const Transaction: FC<{ id: number }> = ({ id }) => {
@@ -17,7 +18,11 @@ export const Transaction: FC<{ id: number }> = ({ id }) => {
         'loading...'
       ) : data ? (
         <div className={styles.transaction}>
-          <div>{data.merchantInfo}</div>
+          <div>
+            <div>{data.merchantInfo}</div>
+            <div>{data.cardID}</div>
+            <div>{date.format(data.transactionDate)}</div>
+          </div>
           <div className={styles.price}>
             <div
               className={cn(styles.amount, {

@@ -1,20 +1,32 @@
-import { UI } from 'shared';
+import { useEffect } from 'react';
 import { useGate, useStore } from 'effector-react';
 import { Routes, Route } from 'react-router-dom';
+import { UI } from 'shared';
 import { Pages } from 'pages';
-import { Model } from 'domains/user';
+import { User, Transaction, Card } from 'domains';
 
 export const App = () => {
-  useGate(Model.userGate);
-  const user = useStore(Model.$user);
-  const loading = Model.isUserLoading(user);
+  useGate(User.Model.userGate);
+  const { loading, user } = useStore(User.Model.$store);
+
+  useEffect(() => {
+    // TODO switch to gate
+    if (user) {
+      Transaction.Model.transactions.init();
+      Card.Model.cards.init();
+    }
+    return () => {
+      Transaction.Model.transactions.reset();
+      Card.Model.cards.reset();
+    };
+  }, [user]);
 
   return (
     <UI.Layout>
       <UI.Header>
         <UI.Logo>_Bank</UI.Logo>
         {!loading && <UI.Navigation />}
-        {!loading && <UI.Account text={user.fullName} />}
+        {user && <UI.Account user={user} />}
       </UI.Header>
       <div>
         {loading ? (
@@ -22,7 +34,12 @@ export const App = () => {
         ) : (
           <Routes>
             <Route path="/" element={<Pages.Home />} />
-            <Route path="/cards" element={<Pages.Cards />} />
+            <Route path="/cards" element={<Pages.Cards />}>
+              <Route
+                path="/cards/:cardID"
+                element={<Pages.Cards />}
+              />
+            </Route>
             <Route
               path="/transactions"
               element={<Pages.Transactions />}

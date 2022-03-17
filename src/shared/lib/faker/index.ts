@@ -21,7 +21,7 @@ export const fakerSDK = () => {
   const array = <R>(element: BaseType<R>, size: number) =>
     new _List(element, size);
 
-  const object = <R>(conf: Record<string, BaseType<any>>) =>
+  const object = <R>(conf: Record<keyof R, BaseType<any>>) =>
     new _Object<R>(conf);
 
   const float = (min: number, max: number, decimals: number) =>

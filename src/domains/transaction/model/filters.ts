@@ -1,12 +1,12 @@
 import { sample, createEvent } from 'effector';
 import { fetchTransactions } from './transactions';
 
-const paginate = createEvent<number>();
+const filtrate = createEvent<number>();
 
 sample({
-  source: paginate,
+  source: filtrate,
   fn: (page) => ({ page }),
   target: fetchTransactions,
 });
 
-export { paginate };
+export { filtrate };

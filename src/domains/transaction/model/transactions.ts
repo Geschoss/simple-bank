@@ -6,13 +6,8 @@ import {
 } from 'effector';
 import { debounce } from 'patronum';
 import { api } from 'shared';
+import { Pagination } from 'domains/common';
 import { Transaction } from '../typings';
-
-type Pagination<R> = {
-  page: number;
-  pageCount: number;
-  data: R[];
-};
 
 type TransactionFilter = Partial<
   Pick<
@@ -30,8 +25,8 @@ const reset = createEvent();
 const fetchTransactions = createEvent<TransactionFilter>();
 
 const fetchTransactionsFx = createEffect(
-  (filter?: TransactionFilter) =>
-    api.post<Pagination<Transaction>>('/transactions', filter)
+  (filters?: TransactionFilter) =>
+    api.post<Pagination<Transaction>>('/transactions', filters)
 );
 
 const $store = createStore<
@@ -55,7 +50,7 @@ const $store = createStore<
   .reset(reset);
 
 sample({
-  source: debounce({ source: fetchTransactions, timeout: 200 }),
+  clock: debounce({ source: fetchTransactions, timeout: 200 }),
   target: fetchTransactionsFx,
 });
 

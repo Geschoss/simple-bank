@@ -1,17 +1,12 @@
+import { random } from '../helpers';
+
 export abstract class BaseType<R> {
   abstract type: string;
   abstract generate(...args: any[]): R;
 }
 
-const randomInt = (min: number, max: number) => {
-  return Math.floor(Math.random() * (max - min) + min);
-};
-
-const randomFloat = (min, max, decimals) => {
-  const str = (Math.random() * (max - min) + min).toFixed(decimals);
-
-  return parseFloat(str);
-};
+const randomInt = random.int;
+const randomFloat = random.float;
 
 export class _Int extends BaseType<number> {
   type = 'int';
@@ -50,11 +45,11 @@ export class _Enum<R> extends BaseType<R> {
 
 export class _Object<R> extends BaseType<any> {
   type = 'object';
-  constructor(private conf: Record<string, BaseType<any>>) {
+  constructor(private conf: Record<keyof R, BaseType<any>>) {
     super();
   }
   generate(index?: number) {
-    return Object.entries(this.conf).reduce(
+    return Object.entries<BaseType<any>>(this.conf).reduce(
       (acc, [key, value]) => ({
         ...acc,
         [key]: value.generate(index),

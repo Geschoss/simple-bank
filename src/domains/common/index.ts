@@ -1,1 +1,1 @@
-export type { Currency } from './typings';
+export type { Currency, Pagination } from './typings';
