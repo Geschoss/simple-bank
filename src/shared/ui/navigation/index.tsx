@@ -21,7 +21,7 @@ const Item: FC<{ to: string }> = ({ to, children }) => {
   );
 };
 
-export const Navigation: FC = ({}) => {
+export const Navigation: FC = () => {
   return (
     <nav className={styles.navigation}>
       <ul>

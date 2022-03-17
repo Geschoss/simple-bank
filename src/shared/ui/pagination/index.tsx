@@ -10,11 +10,15 @@ export const Pagination: FC<{
 }> = ({ page, count, onClick }) => {
   const handleClick = useCallback<
     React.MouseEventHandler<HTMLLIElement>
-  >((event) => {
-    // @ts-ignore react dont know that i have data-value
-    const page = parseInt(event.target.dataset.value, 10);
-    onClick(page);
-  }, []);
+  >(
+    (event) => {
+      // @ts-ignore react dont know that i have data-value
+      const page = parseInt(event.target.dataset.value, 10);
+      onClick(page);
+    },
+    [onClick]
+  );
+
   return (
     <ul className={styles.pagination}>
       {array.range(count).map((index) => {
