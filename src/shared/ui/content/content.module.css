@@ -2,7 +2,7 @@
   display: grid;
   grid-gap:1.15rem;
   gap: 1.15rem;
-  grid-template-columns: calc(65%) 1fr;
+  grid-template-columns: calc(65% - 2px) 1fr;
 }
 
 .content {

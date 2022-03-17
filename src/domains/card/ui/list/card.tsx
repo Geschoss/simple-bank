@@ -21,7 +21,7 @@ export const Card: FC<{
   card: Typings.Card;
   onClick: (id: number) => void;
 }> = ({ card, onClick }) => {
-  const { cardID, maskedCardNumber, balance } = card;
+  const { cardID, maskedCardNumber, balance, currency } = card;
   const status = getStatus(card);
   const handleClick = useCallback(() => {
     onClick(cardID);
@@ -29,7 +29,11 @@ export const Card: FC<{
 
   return (
     <div
-      className={cn(styles.card, styles[`status__${status}`])}
+      className={cn(
+        styles.card,
+        styles[`status__${status}`],
+        styles[`currency__${currency}`]
+      )}
       onClick={handleClick}
     >
       <div>
@@ -41,6 +45,7 @@ export const Card: FC<{
       </div>
       <div className={styles.footer}>
         <CardLogo />
+        <div className={styles.currency}>{currency}</div>
         <div className={styles.balance}>{balance}</div>
       </div>
     </div>

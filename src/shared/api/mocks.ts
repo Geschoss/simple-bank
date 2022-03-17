@@ -7,7 +7,7 @@ import { random, array } from 'shared/lib/helpers';
 const faker = fakerSDK();
 const NAMES = ['Garnett Hintz', 'Devyn Gibson', 'Tito Ward'];
 const PER_PAGE = 10;
-const CARDS_COUNT = 10;
+const CARDS_COUNT = 30;
 const USERCS_COUNT = NAMES.length;
 
 const merchantInfo = [
