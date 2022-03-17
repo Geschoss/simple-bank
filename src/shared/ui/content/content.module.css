@@ -1,0 +1,19 @@
+.exercises {
+  display: grid;
+  grid-gap:1.15rem;
+  gap: 1.15rem;
+  grid-template-columns: calc(60% - 3px) 1fr;
+}
+
+.content {
+  flex: 1;
+  margin: 3rem auto;
+  width: 100%
+}
+
+.container {
+  margin: 2em auto;
+  max-width: calc(1098.33333px + 2rem);
+  padding: 0 1rem;
+  width: 100%;
+}

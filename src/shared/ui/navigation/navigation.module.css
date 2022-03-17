@@ -1,0 +1,34 @@
+.navigation {
+  display: block;
+  max-width: calc(58.33333% - 4.16667px);
+  margin-left: auto;
+  width: 100%;
+}
+
+.navigation > ul {
+  grid-gap: 20px;
+  align-items: center;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: auto auto auto auto auto 1fr;
+  list-style: none;
+  padding: 0;
+  margin-top: 25px;
+}
+
+.item {
+  margin: 0 10px;
+  cursor: pointer;
+  box-sizing: border-box;
+  text-decoration: none;
+  color: #071838;
+  font-family: IBM Plex Mono;
+  font-size: 16px;
+  line-height: 1.62;
+  text-decoration-style: solid;
+}
+
+.active {
+  font-weight: 600;
+  border-bottom: 1px solid #071838;
+}

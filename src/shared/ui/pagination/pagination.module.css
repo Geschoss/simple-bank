@@ -1,0 +1,19 @@
+.pagination {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item {
+  margin: 0 10px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.active {
+  font-weight: 600;
+  color: #3c50e0;
+  border-bottom: 1px solid #3c50e0;
+}

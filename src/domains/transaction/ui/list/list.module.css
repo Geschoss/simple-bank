@@ -1,0 +1,88 @@
+.root {
+  border: 0;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.table_row {
+  grid-gap: 1rem;
+  align-items: center;
+  border-radius: 4px;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  display: table-row;
+  height: 2rem;
+  padding: 0;
+}
+
+.table_row:nth-child(odd) {
+  background: #f2f2f2;
+}
+
+.table_row:nth-child(2n) {
+  height: 3rem;
+}
+
+.table_row {
+  display: table-row;
+}
+
+.table_column {
+  font-family: IBM Plex Mono, sans-serif;
+  font-size: 14px;
+  padding-left: 1rem;
+  text-align: left;
+}
+
+.table_column:last-of-type {
+  padding-right: 1rem;
+}
+
+.table_column__heading {
+  color: #3c50e0;
+  font-weight: 600;
+}
+
+.table_column__full_width {
+  width: 100%;
+}
+
+.table_link {
+  font-weight: 500;
+  color: #071838;
+  cursor: pointer;
+  font-family: IBM Plex Mono, monospace;
+  opacity: 1;
+  overflow: hidden;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  transition: opacity 0.35s ease-in-out;
+  white-space: nowrap;
+}
+
+.table_link:hover {
+  opacity: 0.7;
+}
+
+.amount {
+  color: #198015;
+  font-weight: 600;
+}
+
+.amount__red {
+  color: #a71414;
+}
+
+.filters {
+  height: 30px;
+  margin: 10px 0;
+}
+
+.filter_button {
+  width: 100px;
+}
+
+.table_column__date {
+  min-width: 140px;
+}

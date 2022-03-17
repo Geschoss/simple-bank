@@ -1,0 +1,11 @@
+.logo {
+  display: flex;
+  height: 20px;
+  width: fit-content;
+  text-decoration: none;
+  color: #071838;
+  font-family: IBM Plex Mono;
+  font-size: 16px;
+  line-height: 1.62;
+  text-decoration-style: solid;
+}

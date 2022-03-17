@@ -1,0 +1,28 @@
+.root {
+  height: 200px;
+  background: #f2f2f2;
+  border-radius: 4px;
+  margin: 5px 0;
+  padding: 1rem;
+}
+
+.transaction {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.price {
+  text-align: right;
+}
+
+.amount {
+  font-size: 42px;
+  color: #198015;
+  font-weight: 600;
+}
+
+.amount__red {
+  color: #a71414;
+}
