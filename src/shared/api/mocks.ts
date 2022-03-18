@@ -6,7 +6,8 @@ import { random, array } from 'shared/lib/helpers';
 
 const faker = fakerSDK();
 const NAMES = ['Garnett Hintz', 'Devyn Gibson', 'Tito Ward'];
-const PER_PAGE = 10;
+const TRANSACTION_PER_PAGE = 10;
+const CARDS_PER_PAGE = 9;
 const CARDS_COUNT = 30;
 const USERCS_COUNT = NAMES.length;
 
@@ -37,7 +38,7 @@ const maskedCardNumbers = array.make(
       )
       .generate()
       .join('-'),
-  20
+  CARDS_COUNT
 );
 
 const fullName = faker.enums(NAMES);
@@ -52,17 +53,18 @@ const users = faker
   .array(
     faker.object<User>({
       fullName,
-      cardAccount: faker.enums(cardAccount),
+      cardAccount: faker.unique(cardAccount),
     }),
     USERCS_COUNT
   )
   .generate();
+
 const cardsMock = faker
   .array(
     faker.object<Card>({
-      cardID: faker.enums(cardIDs),
+      cardID: faker.unique(cardIDs),
       cardAccount: faker.enums(cardAccount),
-      maskedCardNumber: faker.enums(maskedCardNumbers),
+      maskedCardNumber: faker.unique(maskedCardNumbers),
       expireDate: faker.date(
         '2021-01-01T00:00:00.000Z',
         '2035-01-01T00:00:00.000Z'
@@ -99,15 +101,64 @@ const transactionsMock = faker
   );
 
 const fakeEndpoinst = {
-  '/cards': (_, { page = 1, cardAccount }) => {
+  user: null,
+  '/filters/cards': (_, { cardAccount }) => {
     const cards = cardsMock.filter(
       (transaction) => transaction.cardAccount === cardAccount
     );
 
+    const filters = cards.reduce(
+      (filters, { cardID, cardAccount, currency, status }) => {
+        filters.cardID.add(cardID);
+        filters.cardAccount.add(cardAccount);
+        filters.currency.add(currency);
+        filters.status.add(status);
+        return filters;
+      },
+      {
+        cardID: new Set<number>(),
+        cardAccount: new Set<number>(),
+        currency: new Set<string>(),
+        status: new Set<string>(),
+      }
+    );
+
+    return {
+      cardID: Array.from(filters.cardID),
+      cardAccount: Array.from(filters.cardAccount),
+      currency: Array.from(filters.currency),
+      status: Array.from(filters.status),
+    };
+  },
+  '/cards': (
+    _,
+    { page = 1, cardAccount, status, currency, cardID }
+  ) => {
+    const cards = cardsMock.filter((card) => {
+      if (card.cardAccount !== cardAccount) {
+        return false;
+      }
+
+      if (currency && !currency.includes(card.currency)) {
+        return false;
+      }
+
+      if (status && !status.includes(card.status)) {
+        return false;
+      }
+      if (cardID && !cardID.includes(card.cardID)) {
+        return false;
+      }
+      return true;
+    });
+
     return {
       page,
-      pageCount: Math.ceil(cards.length / PER_PAGE),
-      data: cards.slice((page - 1) * PER_PAGE, page * PER_PAGE),
+      pageCount: Math.ceil(cards.length / CARDS_PER_PAGE),
+      data: cards.slice(
+        (page - 1) * CARDS_PER_PAGE,
+        page * CARDS_PER_PAGE
+      ),
     };
   },
   '/user': () => {
@@ -122,17 +173,22 @@ const fakeEndpoinst = {
       )
       .find((transaction) => transaction.transactionID === id);
   },
-  '/transactions': (_, { page = 1, cardAccount }) => {
-    const transactions = transactionsMock.filter(
-      (transaction) => transaction.cardAccount === cardAccount
-    );
+  '/transactions': (_, { page = 1, cardAccount, filters }) => {
+    const transactions = transactionsMock.filter((transaction) => {
+      if (transaction.cardAccount !== cardAccount) {
+        return false;
+      }
+      return true;
+    });
 
     return {
       page,
-      pageCount: Math.ceil(transactions.length / PER_PAGE),
+      pageCount: Math.ceil(
+        transactions.length / TRANSACTION_PER_PAGE
+      ),
       data: transactions.slice(
-        (page - 1) * PER_PAGE,
-        page * PER_PAGE
+        (page - 1) * TRANSACTION_PER_PAGE,
+        page * TRANSACTION_PER_PAGE
       ),
     };
   },

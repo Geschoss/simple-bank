@@ -14,7 +14,7 @@ const fetchUserFx = createEffect(() => {
 
 const $store = createStore<{ loading: boolean; user: User | null }>({
   user: null,
-  loading: false,
+  loading: true,
 })
   .on(fetchUserFx, (state) => ({ ...state, loading: true }))
   .on(fetchUserFx.doneData, (_, user) => ({

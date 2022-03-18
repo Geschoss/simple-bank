@@ -8,8 +8,12 @@ import {
   _Int,
   _List,
   _Object,
+  _Unique,
 } from './type';
 
+/* TODO
+ + unique array
+*/
 export const fakerSDK = () => {
   const enums = <R>(e: R[]) => new _Enum<R>(e);
   const index = () => new _Index();
@@ -27,6 +31,8 @@ export const fakerSDK = () => {
   const float = (min: number, max: number, decimals: number) =>
     new _Float(min, max, decimals);
 
+  const unique = <R>(array: R[]) => new _Unique(array);
+
   return {
     int,
     array,
@@ -35,6 +41,7 @@ export const fakerSDK = () => {
     enums,
     float,
     object,
+    unique,
     constant,
   };
 };

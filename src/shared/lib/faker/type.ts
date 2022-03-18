@@ -104,3 +104,21 @@ export class _Date extends BaseType<Date> {
     return newDate;
   }
 }
+
+export class _Unique<R> extends BaseType<R> {
+  type = 'unique';
+  private unique: R[] = [];
+  constructor(unique: R[]) {
+    super();
+    this.unique = [...unique];
+  }
+  generate() {
+    const item = this.unique.pop();
+
+    if (!item) {
+      throw new Error('Not enough unique items');
+    }
+
+    return item;
+  }
+}

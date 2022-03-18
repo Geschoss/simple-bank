@@ -3,7 +3,7 @@ import { useGate, useStore } from 'effector-react';
 import { Routes, Route } from 'react-router-dom';
 import { UI } from 'shared';
 import { Pages } from 'pages';
-import { User, Transaction, Card } from 'domains';
+import { User, Transaction } from 'domains';
 
 export const App = () => {
   useGate(User.Model.userGate);
@@ -13,11 +13,9 @@ export const App = () => {
     // TODO switch to gate
     if (user) {
       Transaction.Model.transactions.init();
-      Card.Model.cards.init();
     }
     return () => {
       Transaction.Model.transactions.reset();
-      Card.Model.cards.reset();
     };
   }, [user]);
 

@@ -3,22 +3,23 @@ import { useStore } from 'effector-react';
 import { Model } from 'domains/card';
 import { Card } from './card';
 import styles from './list.module.css';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export const List: FC = () => {
-  const { data } = useStore(Model.cards.$store);
-  let navigate = useNavigate();
+  const { cards } = useStore(Model.cards.$store);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const handleClick = useCallback(
     (cardID: number) => {
-      navigate(`/cards/${cardID}`);
+      navigate(`/cards/${cardID}${location.search}`);
     },
-    [navigate]
+    [navigate, location]
   );
 
   return (
     <div className={styles.cards}>
-      {data.map((card) => {
+      {cards.map((card) => {
         return (
           <Card key={card.cardID} card={card} onClick={handleClick} />
         );

@@ -4,7 +4,6 @@ import { Typings } from 'domains/card';
 import styles from './list.module.css';
 import { CardLogo } from './cardLogo';
 
-// TODO
 const currentDate = new Date();
 const getStatus = ({ expireDate, status }: Typings.Card) => {
   if (currentDate > expireDate) {
@@ -22,6 +21,7 @@ export const Card: FC<{
   onClick: (id: number) => void;
 }> = ({ card, onClick }) => {
   const { cardID, maskedCardNumber, balance, currency } = card;
+
   const status = getStatus(card);
   const handleClick = useCallback(() => {
     onClick(cardID);
@@ -41,6 +41,7 @@ export const Card: FC<{
           <div>_Bank</div>
           {status && <div className={styles.blocked}>{status}</div>}
         </div>
+        <div>{cardID}</div>
         <div>{maskedCardNumber}</div>
       </div>
       <div className={styles.footer}>

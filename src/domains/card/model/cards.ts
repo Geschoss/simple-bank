@@ -15,26 +15,27 @@ type CardsFilter = Partial<
   }
 >;
 
-const init = createEvent();
 const reset = createEvent();
+const init = createEvent<CardsFilter | undefined>();
 const fetchCards = createEvent<CardsFilter>();
 
 const fetchCardsFx = createEffect((filters?: CardsFilter) =>
   api.post<Pagination<Card>>('/cards', filters)
 );
 
-const $store = createStore<
-  Pagination<Card> & {
-    loading: boolean;
-  }
->({ data: [], loading: false, page: 0, pageCount: 0 })
+const $store = createStore<{
+  cards: Card[];
+  page: number;
+  loading: boolean;
+  pageCount: number;
+}>({ cards: [], loading: false, page: 0, pageCount: 0 })
   .on(fetchCardsFx, (state) => ({
     ...state,
     loading: true,
   }))
   .on(fetchCardsFx.doneData, (_, { data, page, pageCount }) => ({
     loading: false,
-    data,
+    cards: data,
     page,
     pageCount,
   }))
@@ -47,7 +48,7 @@ sample({
 
 sample({
   source: init,
-  fn: () => ({}),
+  fn: (filters: CardsFilter = {}) => filters,
   target: fetchCards,
 });
 

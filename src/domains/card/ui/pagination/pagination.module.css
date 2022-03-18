@@ -1,0 +1,22 @@
+.pagination {
+  display: flex;
+  height: 40px;
+  margin-bottom: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filter_button {
+  position: relative;
+  width: 100px;
+}
+.filter_buble {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 15px;
+  height: 15px;
+  background-color: red;
+  border-radius: 50%;
+  box-shadow: 2px 2px 2px rgb(0 0 0 / 25%);
+}
