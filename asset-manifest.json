@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/simple-bank/static/css/main.438059be.css",
-    "main.js": "/simple-bank/static/js/main.9ffbd920.js",
+    "main.css": "/simple-bank/static/css/main.e4a11eac.css",
+    "main.js": "/simple-bank/static/js/main.d2c85424.js",
     "index.html": "/simple-bank/index.html",
-    "main.438059be.css.map": "/simple-bank/static/css/main.438059be.css.map",
-    "main.9ffbd920.js.map": "/simple-bank/static/js/main.9ffbd920.js.map"
+    "main.e4a11eac.css.map": "/simple-bank/static/css/main.e4a11eac.css.map",
+    "main.d2c85424.js.map": "/simple-bank/static/js/main.d2c85424.js.map"
   },
   "entrypoints": [
-    "static/css/main.438059be.css",
-    "static/js/main.9ffbd920.js"
+    "static/css/main.e4a11eac.css",
+    "static/js/main.d2c85424.js"
   ]
 }
