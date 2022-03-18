@@ -17,9 +17,10 @@ const getStatus = ({ expireDate, status }: Typings.Card) => {
 };
 
 export const Card: FC<{
+  selected: boolean;
   card: Typings.Card;
   onClick: (id: number) => void;
-}> = ({ card, onClick }) => {
+}> = ({ card, onClick, selected }) => {
   const { cardID, maskedCardNumber, balance, currency } = card;
 
   const status = getStatus(card);
@@ -32,7 +33,8 @@ export const Card: FC<{
       className={cn(
         styles.card,
         styles[`status__${status}`],
-        styles[`currency__${currency}`]
+        styles[`currency__${currency}`],
+        { [styles.card__selected]: selected }
       )}
       onClick={handleClick}
     >

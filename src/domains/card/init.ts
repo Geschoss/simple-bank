@@ -26,5 +26,9 @@ export const useInitCard = () => {
 
     Model.cards.init(filters);
     Model.filters.fetchFilters();
+
+    return () => {
+      Model.cards.reset();
+    };
   }, [searchParams]);
 };

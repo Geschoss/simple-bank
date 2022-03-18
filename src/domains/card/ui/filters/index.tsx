@@ -68,7 +68,7 @@ export const Filters: FC = () => {
     }
 
     setSearchParams(searchParams);
-  }, [statusValues, currencyValues, cardIDValues]);
+  }, [statusValues, currencyValues, cardIDValues, setSearchParams]);
 
   return (
     <div className={styles.filters}>

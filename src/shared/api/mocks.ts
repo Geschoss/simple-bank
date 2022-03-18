@@ -5,7 +5,7 @@ import { fakerSDK } from 'shared/lib';
 import { random, array } from 'shared/lib/helpers';
 
 const faker = fakerSDK();
-const NAMES = ['Garnett Hintz', 'Devyn Gibson', 'Tito Ward'];
+const NAMES = ['Garnett Hintz'];
 const TRANSACTION_PER_PAGE = 10;
 const CARDS_PER_PAGE = 9;
 const CARDS_COUNT = 30;
@@ -129,6 +129,11 @@ const fakeEndpoinst = {
       currency: Array.from(filters.currency),
       status: Array.from(filters.status),
     };
+  },
+  '/card': (_, { id, cardAccount }) => {
+    return cardsMock
+      .filter((card) => card.cardAccount === cardAccount)
+      .find((card) => card.cardID === id);
   },
   '/cards': (
     _,

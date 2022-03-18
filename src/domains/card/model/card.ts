@@ -5,32 +5,32 @@ import {
   createEvent,
 } from 'effector';
 import { api } from 'shared';
-import { Transaction } from '../typings';
+import { Card } from '../typings';
 
 const reset = createEvent();
 const fetch = createEvent<number>();
 
-const fetchTransactionFx = createEffect((id: number) =>
-  api.post<Transaction>('/transaction', { id })
+const fetchCardFx = createEffect((id: number) =>
+  api.post<Card>('/card', { id })
 );
 
 const $store = createStore<{
   loading: boolean;
-  transaction: Transaction | null;
-}>({ transaction: null, loading: false })
-  .on(fetchTransactionFx, (state) => ({
+  card: Card | null;
+}>({ card: null, loading: false })
+  .on(fetchCardFx, (state) => ({
     ...state,
     loading: true,
   }))
-  .on(fetchTransactionFx.doneData, (_, transaction) => ({
+  .on(fetchCardFx.doneData, (_, card) => ({
     loading: false,
-    transaction,
+    card,
   }))
   .reset(reset);
 
 sample({
   source: fetch,
-  target: fetchTransactionFx,
+  target: fetchCardFx,
 });
 
 export { $store, reset, fetch };
