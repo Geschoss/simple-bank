@@ -4,7 +4,6 @@ import {
   createEffect,
   createEvent,
 } from 'effector';
-import { debounce } from 'patronum';
 import { api } from 'shared';
 import { Pagination } from 'domains/common';
 import { Transaction } from '../typings';
@@ -50,7 +49,7 @@ const $store = createStore<
   .reset(reset);
 
 sample({
-  clock: debounce({ source: fetchTransactions, timeout: 200 }),
+  clock: fetchTransactions,
   target: fetchTransactionsFx,
 });
 

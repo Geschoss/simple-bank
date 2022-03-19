@@ -1,0 +1,25 @@
+.breadcrumb {
+  margin-left: 5px;
+  cursor: pointer;
+  box-sizing: border-box;
+  text-decoration: none;
+  color: #071838;
+  font-family: IBM Plex Mono;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.62;
+  text-decoration-style: solid;
+}
+
+.breadcrumb:first-of-type {
+  margin-left: 0;
+}
+
+.breadcrumb__active {
+  font-weight: 600;
+  border-bottom: 1px solid #071838;
+}
+
+.breadcrumb_separator {
+  margin-left: 5px;
+}

@@ -5,17 +5,23 @@ import { UI } from 'shared';
 import styles from './transaction.module.css';
 
 export const Transactions = memo(() => {
-  const { transactionID } = useParams();
+  const { transactionID = '-1' } = useParams();
+  const id = parseInt(transactionID, 10);
 
   return (
     <UI.Content>
       <main>
-        <UI.Title>Transactions</UI.Title>
-        <Transaction.UI.Filters />
-        <Transaction.UI.List />
+        <UI.Breadcrumb to="/transactions">Transactions</UI.Breadcrumb>
+        {id > 0 && (
+          <UI.Breadcrumb to={`/transactions/${id}`}>
+            {id}
+          </UI.Breadcrumb>
+        )}
+        <Transaction.UI.Pagination />
+        <Transaction.UI.List selectedId={id} />
       </main>
       <aside className={styles.aside}>
-        {transactionID && (
+        {id > 0 && (
           <Transaction.UI.Transaction
             id={parseInt(transactionID, 10)}
           />

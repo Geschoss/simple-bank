@@ -1,15 +1,16 @@
 import { FC } from 'react';
 import { useStore } from 'effector-react';
-import styles from './list.module.css';
+import cn from 'classnames';
 import { Row } from './row';
 import { Header } from './header';
 import { Model } from 'domains/transaction';
+import styles from './list.module.css';
 
-export const List: FC = () => {
-  const { data } = useStore(Model.transactions.$store);
+export const List: FC<{ selectedId: number }> = ({ selectedId }) => {
+  const { data, loading } = useStore(Model.transactions.$store);
 
   return (
-    <table className={styles.root}>
+    <table className={cn(styles.root, { [styles.loading]: loading })}>
       <tbody>
         <Header />
         {data.map(
@@ -26,6 +27,7 @@ export const List: FC = () => {
               id={transactionID}
               info={merchantInfo}
               currency={currency}
+              selected={selectedId === transactionID}
               transactionDate={transactionDate}
             />
           )

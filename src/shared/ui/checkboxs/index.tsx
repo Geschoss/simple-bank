@@ -1,7 +1,7 @@
 import { FC } from 'react';
-import styles from './filters.module.css';
+import styles from './checkbox.module.css';
 
-export const Filter: FC<{
+export const Checkboxs: FC<{
   onChange: React.ChangeEventHandler<HTMLInputElement>;
   name: string;
   filters: string[] | number[];

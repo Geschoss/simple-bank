@@ -9,11 +9,9 @@ import {
   _List,
   _Object,
   _Unique,
+  _UniqueList,
 } from './type';
 
-/* TODO
- + unique array
-*/
 export const fakerSDK = () => {
   const enums = <R>(e: R[]) => new _Enum<R>(e);
   const index = () => new _Index();
@@ -24,6 +22,9 @@ export const fakerSDK = () => {
 
   const array = <R>(element: BaseType<R>, size: number) =>
     new _List(element, size);
+
+  const uniqueArray = <R>(element: BaseType<R>, size: number) =>
+    new _UniqueList(element, size);
 
   const object = <R>(conf: Record<keyof R, BaseType<any>>) =>
     new _Object<R>(conf);
@@ -43,5 +44,6 @@ export const fakerSDK = () => {
     object,
     unique,
     constant,
+    uniqueArray,
   };
 };

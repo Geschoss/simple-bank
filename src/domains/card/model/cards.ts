@@ -5,7 +5,6 @@ import {
   createEvent,
 } from 'effector';
 import { Pagination } from 'domains/common';
-import { debounce } from 'patronum';
 import { api } from 'shared';
 import { Card } from '../typings';
 
@@ -15,8 +14,8 @@ type CardsFilter = Partial<
   }
 >;
 
+const init = createEvent();
 const reset = createEvent();
-const init = createEvent<CardsFilter | undefined>();
 const fetchCards = createEvent<CardsFilter>();
 
 const fetchCardsFx = createEffect((filters?: CardsFilter) =>
@@ -42,13 +41,13 @@ const $store = createStore<{
   .reset(reset);
 
 sample({
-  clock: debounce({ source: fetchCards, timeout: 200 }),
+  clock: fetchCards,
   target: fetchCardsFx,
 });
 
 sample({
   source: init,
-  fn: (filters: CardsFilter = {}) => filters,
+  fn: () => ({}),
   target: fetchCards,
 });
 

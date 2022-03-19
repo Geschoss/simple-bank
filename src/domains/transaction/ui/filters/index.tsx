@@ -1,38 +1,44 @@
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback } from 'react';
 import { useStore } from 'effector-react';
-import styles from './filters.module.css';
 import { Model } from 'domains/transaction';
 import { UI } from 'shared';
+import styles from './filters.module.css';
+
+type CB = React.ChangeEventHandler<HTMLInputElement>;
 
 export const Filters: FC = () => {
-  const [opened, toggleFilters] = useState(false);
-  const { page, pageCount, loading } = useStore(
-    Model.transactions.$store
-  );
+  const { filters } = useStore(Model.filters.$filters);
+  const { currency, cardID } = filters;
 
-  const handlePageChange = useCallback((page: number) => {
-    Model.pagination.paginate(page);
+  const cardIDValues = useStore(Model.filters.$cardIDValues);
+  const currencyValues = useStore(Model.filters.$currencyValues);
+
+  const handleCurrencyChanged = useCallback<CB>(({ target }) => {
+    Model.filters.currencyChanged(target.id);
   }, []);
 
-  const handleToggleFilters = useCallback(() => {
-    toggleFilters((state) => !state);
-  }, [toggleFilters]);
+  const handleCardIDChanged = useCallback<CB>(
+    ({ target }) => {
+      Model.filters.cardIDCahnged(target.id);
+    },
+    [cardIDValues]
+  );
 
   return (
-    <div>
-      <div className={styles.pagination}>
-        <UI.Pagination
-          page={page}
-          count={pageCount}
-          onClick={handlePageChange}
-        />
-        <div className={styles.filter_button}>
-          <UI.Button onClick={handleToggleFilters}>
-            {loading ? 'Loading...' : 'Filters'}
-          </UI.Button>
-        </div>
-      </div>
-      {opened && <div className={styles.filter}>Filters</div>}
+    <div className={styles.filters}>
+      <UI.Checkboxs
+        name="currency"
+        filters={currency}
+        values={currencyValues}
+        onChange={handleCurrencyChanged}
+      />
+
+      <UI.Checkboxs
+        name="cardID"
+        filters={cardID}
+        values={cardIDValues}
+        onChange={handleCardIDChanged}
+      />
     </div>
   );
 };

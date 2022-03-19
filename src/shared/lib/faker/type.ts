@@ -66,6 +66,25 @@ export class _Index extends BaseType<number> {
   }
 }
 
+export class _UniqueList<R> extends BaseType<Array<R>> {
+  type = 'uniqueList';
+  constructor(private element: BaseType<R>, private size: number) {
+    super();
+  }
+  generate() {
+    let set = new Set<R>();
+    for (let i = 0; i < this.size; i++) {
+      const item = this.element.generate(i);
+      if (set.has(item)) {
+        --i;
+        continue;
+      }
+      set.add(item);
+    }
+    return Array.from(set);
+  }
+}
+
 export class _List<R> extends BaseType<Array<R>> {
   type = 'array';
   constructor(private element: BaseType<R>, private size: number) {

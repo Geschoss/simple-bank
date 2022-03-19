@@ -1,92 +1,51 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback } from 'react';
 import { useStore } from 'effector-react';
-import { useSearchParams } from 'react-router-dom';
 import { Model } from 'domains/card';
-import { Filter } from './filter';
+import { UI } from 'shared';
 import styles from './filters.module.css';
-import { initValues, updateState } from './utils';
+
+type CB = React.ChangeEventHandler<HTMLInputElement>;
 
 export const Filters: FC = () => {
-  let [searchParams, setSearchParams] = useSearchParams();
-  const [statusValues, setStatus] = useState<string[]>(
-    initValues('status', searchParams)
-  );
-  const [currencyValues, setCurrency] = useState<string[]>(
-    initValues('currency', searchParams)
-  );
-  const [cardIDValues, setCardID] = useState<string[]>(
-    initValues('cardID', searchParams)
-  );
-
   const { filters } = useStore(Model.filters.$store);
   const { status, currency, cardID } = filters;
 
-  const handleStatusChanged = useCallback<
-    React.ChangeEventHandler<HTMLInputElement>
-  >(
-    (event) => {
-      const { id } = event.target;
-      const state = updateState(statusValues, id);
-      setStatus(state);
-    },
-    [statusValues]
-  );
+  const statusValues = useStore(Model.filters.$statusValues);
+  const cardIDValues = useStore(Model.filters.$cardIDValues);
+  const currencyValues = useStore(Model.filters.$currencyValues);
 
-  const handleCurrencyChanged = useCallback<
-    React.ChangeEventHandler<HTMLInputElement>
-  >(
-    (event) => {
-      const { id } = event.target;
-      const state = updateState(currencyValues, id);
-      setCurrency(state);
-    },
-    [currencyValues]
-  );
+  const handleStatusChanged = useCallback<CB>(({ target }) => {
+    Model.filters.statusChanged(target.id);
+  }, []);
 
-  const handleCardIDChanged = useCallback<
-    React.ChangeEventHandler<HTMLInputElement>
-  >(
-    (event) => {
-      const { id } = event.target;
-      const state = updateState(cardIDValues, id);
-      setCardID(state);
+  const handleCurrencyChanged = useCallback<CB>(({ target }) => {
+    Model.filters.currencyChanged(target.id);
+  }, []);
+
+  const handleCardIDChanged = useCallback<CB>(
+    ({ target }) => {
+      Model.filters.cardIDCahnged(target.id);
     },
     [cardIDValues]
   );
 
-  useEffect(() => {
-    let searchParams: Record<string, string> = {};
-    if (statusValues.length !== 0) {
-      searchParams.status = statusValues.join(',');
-    }
-
-    if (currencyValues.length !== 0) {
-      searchParams.currency = currencyValues.join(',');
-    }
-    if (cardIDValues.length !== 0) {
-      searchParams.cardID = cardIDValues.join(',');
-    }
-
-    setSearchParams(searchParams);
-  }, [statusValues, currencyValues, cardIDValues, setSearchParams]);
-
   return (
     <div className={styles.filters}>
-      <Filter
+      <UI.Checkboxs
         name="status"
         filters={status}
         values={statusValues}
         onChange={handleStatusChanged}
       />
 
-      <Filter
+      <UI.Checkboxs
         name="currency"
         filters={currency}
         values={currencyValues}
         onChange={handleCurrencyChanged}
       />
 
-      <Filter
+      <UI.Checkboxs
         name="cardID"
         filters={cardID}
         values={cardIDValues}

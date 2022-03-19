@@ -1,34 +1,27 @@
 import { FC, useCallback } from 'react';
+import cn from 'classnames';
 import { useStore } from 'effector-react';
 import { Model } from 'domains/card';
 import { Card } from './card';
+import { useNavigate } from 'react-router-dom';
 import styles from './list.module.css';
-import { useLocation, useNavigate } from 'react-router-dom';
 
-export const List: FC<{ selectedId: number }> = ({ selectedId }) => {
-  const { cards } = useStore(Model.cards.$store);
-  const location = useLocation();
+export const List: FC = () => {
+  const { cards, loading } = useStore(Model.cards.$store);
   const navigate = useNavigate();
 
   const handleClick = useCallback(
     (cardID: number) => {
-      navigate(`/cards/${cardID}${location.search}`);
+      navigate(`/cards/${cardID}`);
     },
-    [navigate, location]
+    [navigate]
   );
 
   return (
-    <div className={styles.cards}>
-      {cards.map((card) => {
-        return (
-          <Card
-            key={card.cardID}
-            card={card}
-            selected={card.cardID === selectedId}
-            onClick={handleClick}
-          />
-        );
-      })}
+    <div className={cn(styles.cards, { [styles.loading]: loading })}>
+      {cards.map((card) => (
+        <Card key={card.cardID} card={card} onClick={handleClick} />
+      ))}
     </div>
   );
 };

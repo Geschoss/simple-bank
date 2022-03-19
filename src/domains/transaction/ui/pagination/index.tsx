@@ -1,14 +1,16 @@
 import { FC, useCallback, useState } from 'react';
 import { useStore } from 'effector-react';
-import { Model } from 'domains/card';
-import { Filters } from '../filters';
+import { Model } from 'domains/transaction';
 import { UI } from 'shared';
+import { Filters } from '../filters';
 import styles from './pagination.module.css';
 
 export const Pagination: FC = () => {
   const [opened, toggleFilters] = useState(false);
   const filtersCount = useStore(Model.filters.$selectedFiltersCount);
-  const { page, pageCount, loading } = useStore(Model.cards.$store);
+  const { page, pageCount, loading } = useStore(
+    Model.transactions.$store
+  );
 
   const handlePageChange = useCallback((page: number) => {
     Model.pagination.paginate(page);

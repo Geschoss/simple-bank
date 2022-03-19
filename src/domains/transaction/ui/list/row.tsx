@@ -9,9 +9,14 @@ export const Row: FC<{
   info: string;
   transactionDate: Date;
   amount: number;
+  selected: boolean;
   currency: string;
-}> = ({ id, info, transactionDate, amount, currency }) => (
-  <tr className={styles.table_row}>
+}> = ({ id, info, transactionDate, amount, currency, selected }) => (
+  <tr
+    className={cn(styles.table_row, {
+      [styles.table_row__selected]: selected,
+    })}
+  >
     <td className={cn(styles.table_column)}>
       {date.format(transactionDate)}
     </td>

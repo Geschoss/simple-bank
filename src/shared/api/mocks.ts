@@ -43,10 +43,10 @@ const maskedCardNumbers = array.make(
 
 const fullName = faker.enums(NAMES);
 const cardAccount = faker
-  .array(faker.int(20000, 500000), USERCS_COUNT)
+  .uniqueArray(faker.int(20000, 500000), USERCS_COUNT)
   .generate();
 const cardIDs = faker
-  .array(faker.int(200, 500), CARDS_COUNT)
+  .uniqueArray(faker.int(200, 500), CARDS_COUNT)
   .generate();
 
 const users = faker
@@ -102,9 +102,30 @@ const transactionsMock = faker
 
 const fakeEndpoinst = {
   user: null,
+  '/filters/transactions': (_, { cardAccount }) => {
+    const transactions = transactionsMock.filter(
+      (transaction) => transaction.cardAccount === cardAccount
+    );
+
+    const filters = transactions.reduce(
+      (filters, { cardID, currency }) => {
+        filters.cardID.add(cardID);
+        filters.currency.add(currency);
+        return filters;
+      },
+      {
+        cardID: new Set<number>(),
+        currency: new Set<string>(),
+      }
+    );
+    return {
+      cardID: Array.from(filters.cardID),
+      currency: Array.from(filters.currency),
+    };
+  },
   '/filters/cards': (_, { cardAccount }) => {
     const cards = cardsMock.filter(
-      (transaction) => transaction.cardAccount === cardAccount
+      (card) => card.cardAccount === cardAccount
     );
 
     const filters = cards.reduce(
@@ -178,11 +199,23 @@ const fakeEndpoinst = {
       )
       .find((transaction) => transaction.transactionID === id);
   },
-  '/transactions': (_, { page = 1, cardAccount, filters }) => {
+  '/transactions': (
+    _,
+    { page = 1, cardAccount, currency, cardID }
+  ) => {
     const transactions = transactionsMock.filter((transaction) => {
       if (transaction.cardAccount !== cardAccount) {
         return false;
       }
+
+      if (currency && !currency.includes(transaction.currency)) {
+        return false;
+      }
+
+      if (cardID && !cardID.includes(transaction.cardID)) {
+        return false;
+      }
+
       return true;
     });
 

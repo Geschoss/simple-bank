@@ -1,3 +1,4 @@
+import { Transaction } from 'domains';
 import { FC, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UI } from 'shared';
@@ -6,12 +7,15 @@ export const Actions: FC<{ cardID: number }> = ({ cardID }) => {
   const navigate = useNavigate();
 
   const handleGoCard = useCallback(() => {
-    // navigate(`/cards/${cardID}`);
-  }, [cardID, navigate]);
+    Transaction.Model.filters.cardSelected(`${cardID}`);
+    navigate(`/transactions`);
+  }, [navigate, cardID]);
 
   return (
     <div>
-      <UI.Button onClick={handleGoCard}>Transactions</UI.Button>
+      <UI.Button onClick={handleGoCard}>
+        Show card transactions
+      </UI.Button>
     </div>
   );
 };

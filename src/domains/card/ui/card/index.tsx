@@ -26,17 +26,18 @@ export const Card: FC<{ id: number }> = ({ id }) => {
         ) : card ? (
           <div className={styles.card}>
             <div>
-              <div className={styles.cardNumber}>{card.maskedCardNumber}</div>
+              <div className={styles.cardNumber}>
+                {card.maskedCardNumber}
+              </div>
               <div>{card.cardID}</div>
               <div>{date.format(card.expireDate)}</div>
             </div>
             <div className={styles.price}>
-              <div
-                className={cn(styles.balance)}
-              >
-                {card.balance}
+              <div className={cn(styles.balance)}>{card.balance}</div>
+              <div className={styles.footer}>
+                <div>{card.status}</div>
+                <div>{card.currency}</div>
               </div>
-              <div>{card.currency}</div>
             </div>
           </div>
         ) : null}

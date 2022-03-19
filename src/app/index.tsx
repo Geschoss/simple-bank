@@ -1,22 +1,22 @@
 import { useEffect } from 'react';
 import { useGate, useStore } from 'effector-react';
 import { Routes, Route } from 'react-router-dom';
-import { UI } from 'shared';
+import { User, Transaction, Card } from 'domains';
 import { Pages } from 'pages';
-import { User, Transaction } from 'domains';
+import { UI } from 'shared';
 
 export const App = () => {
   useGate(User.Model.userGate);
   const { loading, user } = useStore(User.Model.$store);
 
   useEffect(() => {
-    // TODO switch to gate
     if (user) {
+      Card.Model.cards.init();
+      Card.Model.filters.fetchFilters();
+
       Transaction.Model.transactions.init();
+      Transaction.Model.filters.fetchFilters();
     }
-    return () => {
-      Transaction.Model.transactions.reset();
-    };
   }, [user]);
 
   return (
@@ -32,12 +32,13 @@ export const App = () => {
         ) : (
           <Routes>
             <Route path="/" element={<Pages.Home />} />
-            <Route path="/cards" element={<Pages.Cards />}>
-              <Route
-                path="/cards/:cardID"
-                element={<Pages.Cards />}
-              />
-            </Route>
+            {/* Cards */}
+            <Route path="/cards" element={<Pages.CardsPage />} />
+            <Route
+              path="/cards/:cardID"
+              element={<Pages.CardPage />}
+            />
+
             <Route
               path="/transactions"
               element={<Pages.Transactions />}

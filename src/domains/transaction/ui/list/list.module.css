@@ -4,6 +4,11 @@
   width: 100%;
 }
 
+.loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 .table_row {
   grid-gap: 1rem;
   align-items: center;
@@ -85,4 +90,9 @@
 
 .table_column__date {
   min-width: 140px;
+}
+
+.table_row__selected .table_link {
+  font-weight: 600;
+  text-decoration: underline;
 }

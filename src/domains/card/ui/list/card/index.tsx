@@ -1,8 +1,8 @@
 import { FC, useCallback } from 'react';
 import cn from 'classnames';
 import { Typings } from 'domains/card';
-import styles from './list.module.css';
-import { CardLogo } from './cardLogo';
+import styles from './card.module.css';
+import { UI } from 'shared';
 
 const currentDate = new Date();
 const getStatus = ({ expireDate, status }: Typings.Card) => {
@@ -17,10 +17,9 @@ const getStatus = ({ expireDate, status }: Typings.Card) => {
 };
 
 export const Card: FC<{
-  selected: boolean;
   card: Typings.Card;
   onClick: (id: number) => void;
-}> = ({ card, onClick, selected }) => {
+}> = ({ card, onClick }) => {
   const { cardID, maskedCardNumber, balance, currency } = card;
 
   const status = getStatus(card);
@@ -33,21 +32,22 @@ export const Card: FC<{
       className={cn(
         styles.card,
         styles[`status__${status}`],
-        styles[`currency__${currency}`],
-        { [styles.card__selected]: selected }
+        styles[`currency__${currency}`]
       )}
       onClick={handleClick}
     >
       <div>
-        <div className={styles.title}>
-          <div>_Bank</div>
+        <div className={styles.header}>
+          <div className={styles.title}>_Bank</div>
           {status && <div className={styles.blocked}>{status}</div>}
         </div>
         <div>{cardID}</div>
         <div>{maskedCardNumber}</div>
       </div>
       <div className={styles.footer}>
-        <CardLogo />
+        <div className={styles.cardLogo}>
+          <UI.Icons.CardLogo />
+        </div>
         <div className={styles.currency}>{currency}</div>
         <div className={styles.balance}>{balance}</div>
       </div>
