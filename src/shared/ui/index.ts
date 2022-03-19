@@ -8,6 +8,6 @@ export { Button } from './button';
 export { Header } from './header';
 export { Layout } from './layout';
 export { Title } from './title';
-export { Date } from './date';
+export { Range } from './range';
 export { Logo } from './logo';
 export * as Icons from './icons';

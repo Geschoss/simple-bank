@@ -7,13 +7,21 @@ import {
 } from 'effector';
 import { api } from 'shared';
 import { fetchTransactions } from './transactions';
-import { updateState } from './utils';
+import {
+  calculateFilters,
+  makeFilterPayload,
+  RangePayload,
+  updateRange,
+  updateState,
+} from './utils';
 
 type Filters = {
   cardID: number[];
   currency: string[];
   date: [string, string];
+  amount: [string, string];
 };
+
 type Store = { loading: boolean; filters: Filters };
 
 const initialStore = {
@@ -22,6 +30,7 @@ const initialStore = {
     cardID: [],
     currency: [],
     date: ['', ''],
+    amount: ['', ''],
   } as Filters,
 };
 
@@ -46,8 +55,8 @@ const cardSelected = createEvent<string>();
 
 const cardIDCahnged = createEvent<string>();
 const currencyChanged = createEvent<string>();
-const dateChanged =
-  createEvent<{ type: 'from' | 'to'; value: string }>();
+const dateChanged = createEvent<RangePayload>();
+const amountChanged = createEvent<RangePayload>();
 
 const $currencyValues = createStore<string[]>([])
   .on(currencyChanged, updateState)
@@ -57,54 +66,28 @@ const $cardIDValues = createStore<string[]>([])
   .on(cardIDCahnged, updateState)
   .on(cardSelected, (_, cardID) => [cardID]);
 
-const $dateValues = createStore<[string, string]>(['', ''])
-  .on(dateChanged, ([from, to], { type, value }) => {
-    if (type === 'from') {
-      return [value, to];
-    }
-    return [from, value];
-  })
+const $dateValues = createStore(['', ''])
+  .on(dateChanged, updateRange)
+  .reset(cardSelected);
+
+const $amountValues = createStore(['', ''])
+  .on(amountChanged, updateRange)
   .reset(cardSelected);
 
 const $selectedFiltersCount = combine(
   $currencyValues,
   $cardIDValues,
   $dateValues,
-  (currencyValues, cardIDValues, [from, to]) => {
-    let result = [currencyValues, cardIDValues].reduce(
-      (acc, filter) => (filter.length > 0 ? acc + 1 : acc),
-      0
-    );
-    if (from !== '') {
-      result++;
-    }
-    if (to !== '') {
-      result++;
-    }
-    return result;
-  }
+  $amountValues,
+  calculateFilters
 );
 
 const $filtersValues = combine(
   $currencyValues,
   $cardIDValues,
   $dateValues,
-  (currency, cardID, [from, to]) => {
-    // TODO simplify
-    let filters: Record<string, any> = {};
-    if (currency.length > 0) {
-      filters.currency = currency;
-    }
-    if (cardID.length > 0) {
-      filters.cardID = cardID.map((value) => parseInt(value, 10));
-    }
-    if (from === '' && to === '') {
-      return filters;
-    }
-    filters.date = [from, to];
-
-    return filters;
-  }
+  $amountValues,
+  makeFilterPayload
 );
 
 sample({
@@ -114,14 +97,16 @@ sample({
 
 export {
   $filters,
+  dateChanged,
+  $dateValues,
   fetchFilters,
+  cardSelected,
   $cardIDValues,
   cardIDCahnged,
-  $currencyValues,
+  $amountValues,
+  amountChanged,
   $filtersValues,
-  cardSelected,
-  $dateValues,
-  dateChanged,
+  $currencyValues,
   currencyChanged,
   $selectedFiltersCount,
 };

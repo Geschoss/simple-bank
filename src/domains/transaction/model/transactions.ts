@@ -7,6 +7,7 @@ import {
 import { api } from 'shared';
 import { Pagination } from 'domains/common';
 import { Transaction } from '../typings';
+import { debounce } from 'patronum';
 
 type TransactionFilter = Partial<
   Pick<Transaction, 'cardID' | 'amount' | 'currency'> & {
@@ -45,7 +46,7 @@ const $store = createStore<
   .reset(reset);
 
 sample({
-  clock: fetchTransactions,
+  clock: debounce({ source: fetchTransactions, timeout: 200 }),
   target: fetchTransactionsFx,
 });
 

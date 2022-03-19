@@ -1,12 +1,13 @@
 import { FC, useCallback } from 'react';
-import styles from './date.module.css';
+import styles from './range.module.css';
 
-export const Date: FC<{
+export const Range: FC<{
   onChange: (payload: { type: string; value: string }) => void;
   name: string;
   from: string;
   to: string;
-}> = ({ onChange, name, from, to }) => {
+  type: string;
+}> = ({ type, onChange, name, from, to }) => {
   const handleDateChange = useCallback<
     React.ChangeEventHandler<HTMLInputElement>
   >(
@@ -24,7 +25,7 @@ export const Date: FC<{
           <label htmlFor="from">
             from:
             <input
-              type="date"
+              type={type}
               id="from"
               value={from}
               onChange={handleDateChange}
@@ -35,7 +36,7 @@ export const Date: FC<{
           <label htmlFor="to">
             to:
             <input
-              type="date"
+              type={type}
               id="to"
               value={to}
               onChange={handleDateChange}

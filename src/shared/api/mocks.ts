@@ -8,7 +8,7 @@ const faker = fakerSDK();
 const NAMES = ['Garnett Hintz'];
 const TRANSACTION_PER_PAGE = 10;
 const CARDS_PER_PAGE = 9;
-const CARDS_COUNT = 30;
+const CARDS_COUNT = 20;
 const USERCS_COUNT = NAMES.length;
 
 const merchantInfo = [
@@ -201,7 +201,7 @@ const fakeEndpoinst = {
   },
   '/transactions': (
     _,
-    { page = 1, cardAccount, currency, cardID, date }
+    { page = 1, cardAccount, currency, cardID, date, amount }
   ) => {
     const transactions = transactionsMock.filter((transaction) => {
       if (transaction.cardAccount !== cardAccount) {
@@ -229,6 +229,24 @@ const fakeEndpoinst = {
         if (to !== '') {
           const fromTime = new Date(to).getTime();
           if (transactionTime > fromTime) {
+            return false;
+          }
+        }
+      }
+
+      if (amount) {
+        const [from, to] = amount;
+
+        if (from !== '') {
+          const fromAmount = parseInt(from, 10);
+          if (transaction.amount < fromAmount) {
+            return false;
+          }
+        }
+
+        if (to !== '') {
+          const fromAmount = parseInt(to, 10);
+          if (transaction.amount < fromAmount) {
             return false;
           }
         }

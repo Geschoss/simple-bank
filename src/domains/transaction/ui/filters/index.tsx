@@ -12,7 +12,8 @@ export const Filters: FC = () => {
 
   const cardIDValues = useStore(Model.filters.$cardIDValues);
   const currencyValues = useStore(Model.filters.$currencyValues);
-  const [from, to] = useStore(Model.filters.$dateValues);
+  const dateValues = useStore(Model.filters.$dateValues);
+  const amountValues = useStore(Model.filters.$amountValues);
 
   const handleCurrencyChanged = useCallback<CB>(({ target }) => {
     Model.filters.currencyChanged(target.id);
@@ -26,12 +27,26 @@ export const Filters: FC = () => {
     Model.filters.dateChanged(payload);
   }, []);
 
+  const handleAmountChange = useCallback((payload) => {
+    console.log({ payload });
+    Model.filters.amountChanged(payload);
+  }, []);
+
   return (
     <div className={styles.filters}>
-      <UI.Date
+      <UI.Range
+        type="number"
+        name="amount"
+        from={amountValues[0]}
+        to={amountValues[1]}
+        onChange={handleAmountChange}
+      />
+
+      <UI.Range
+        type="date"
         name="date"
-        to={to}
-        from={from}
+        from={dateValues[0]}
+        to={dateValues[1]}
         onChange={handleDateChange}
       />
 
