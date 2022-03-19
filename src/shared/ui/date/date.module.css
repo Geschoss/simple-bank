@@ -1,0 +1,19 @@
+.range {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.filterName {
+  font-size: 1.15rem;
+}
+
+.date {
+  margin-right: 10px;
+}
+.date:last-of-type {
+  margin-right: 0;
+}
+
+.filter {
+  margin-bottom: 10px;
+}

@@ -87,7 +87,7 @@ const transactionsMock = faker
       amount: faker.float(-23232.2, 23232.32, 2),
       currency: faker.enums(currency),
       transactionDate: faker.date(
-        '2021-01-01T00:00:00.000Z',
+        '2022-03-01T00:00:00.000Z',
         '2019-01-01T00:00:00.000Z'
       ),
       merchantInfo: faker.enums(merchantInfo),
@@ -201,7 +201,7 @@ const fakeEndpoinst = {
   },
   '/transactions': (
     _,
-    { page = 1, cardAccount, currency, cardID }
+    { page = 1, cardAccount, currency, cardID, date }
   ) => {
     const transactions = transactionsMock.filter((transaction) => {
       if (transaction.cardAccount !== cardAccount) {
@@ -214,6 +214,24 @@ const fakeEndpoinst = {
 
       if (cardID && !cardID.includes(transaction.cardID)) {
         return false;
+      }
+
+      if (date) {
+        const [from, to] = date;
+        const transactionTime = transaction.transactionDate.getTime();
+        if (from !== '') {
+          const fromTime = new Date(from).getTime();
+          if (transactionTime < fromTime) {
+            return false;
+          }
+        }
+
+        if (to !== '') {
+          const fromTime = new Date(to).getTime();
+          if (transactionTime > fromTime) {
+            return false;
+          }
+        }
       }
 
       return true;

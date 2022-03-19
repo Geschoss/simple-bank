@@ -1,4 +1,4 @@
-import { FC, useCallback } from 'react';
+import { FC, useCallback, useState } from 'react';
 import { useStore } from 'effector-react';
 import { Model } from 'domains/transaction';
 import { UI } from 'shared';
@@ -12,20 +12,29 @@ export const Filters: FC = () => {
 
   const cardIDValues = useStore(Model.filters.$cardIDValues);
   const currencyValues = useStore(Model.filters.$currencyValues);
+  const [from, to] = useStore(Model.filters.$dateValues);
 
   const handleCurrencyChanged = useCallback<CB>(({ target }) => {
     Model.filters.currencyChanged(target.id);
   }, []);
 
-  const handleCardIDChanged = useCallback<CB>(
-    ({ target }) => {
-      Model.filters.cardIDCahnged(target.id);
-    },
-    [cardIDValues]
-  );
+  const handleCardIDChanged = useCallback<CB>(({ target }) => {
+    Model.filters.cardIDCahnged(target.id);
+  }, []);
+
+  const handleDateChange = useCallback((payload) => {
+    Model.filters.dateChanged(payload);
+  }, []);
 
   return (
     <div className={styles.filters}>
+      <UI.Date
+        name="date"
+        to={to}
+        from={from}
+        onChange={handleDateChange}
+      />
+
       <UI.Checkboxs
         name="currency"
         filters={currency}

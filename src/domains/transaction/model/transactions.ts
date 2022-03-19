@@ -9,14 +9,10 @@ import { Pagination } from 'domains/common';
 import { Transaction } from '../typings';
 
 type TransactionFilter = Partial<
-  Pick<
-    Transaction,
-    | 'cardID'
-    | 'cardAccount'
-    | 'amount'
-    | 'currency'
-    | 'transactionDate'
-  > & { page: number }
+  Pick<Transaction, 'cardID' | 'amount' | 'currency'> & {
+    page: number;
+    date: [string, string];
+  }
 >;
 
 const init = createEvent();
