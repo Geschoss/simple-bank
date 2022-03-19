@@ -2,15 +2,13 @@ import { Transaction } from 'domains/transaction/typings';
 import { Card } from 'domains/card/typings';
 import { User } from 'domains/user/typings';
 import { fakerSDK } from 'shared/lib';
-import { random, array } from 'shared/lib/helpers';
+import { array } from 'shared/lib/helpers';
 
 const faker = fakerSDK();
-const NAMES = ['Garnett Hintz'];
-const TRANSACTION_PER_PAGE = 10;
-const CARDS_PER_PAGE = 9;
 const CARDS_COUNT = 20;
-const USERCS_COUNT = NAMES.length;
-
+const TRANSACTION_COUNT = 100;
+const NAMES = ['Garnett Hintz'];
+const USERS_COUNT = NAMES.length;
 const merchantInfo = [
   'Schinner - Wiegand',
   'Macejkovic Inc',
@@ -20,6 +18,7 @@ const merchantInfo = [
 ];
 const currency = ['AZN', 'EUR', 'USD'];
 const status = ['active', 'blocked'];
+const fullName = faker.enums(NAMES);
 const maskedCardNumbers = array.make(
   () =>
     faker
@@ -41,25 +40,24 @@ const maskedCardNumbers = array.make(
   CARDS_COUNT
 );
 
-const fullName = faker.enums(NAMES);
 const cardAccount = faker
-  .uniqueArray(faker.int(20000, 500000), USERCS_COUNT)
+  .uniqueArray(faker.int(20000, 500000), USERS_COUNT)
   .generate();
 const cardIDs = faker
   .uniqueArray(faker.int(200, 500), CARDS_COUNT)
   .generate();
 
-const users = faker
+export const users = faker
   .array(
     faker.object<User>({
       fullName,
       cardAccount: faker.unique(cardAccount),
     }),
-    USERCS_COUNT
+    USERS_COUNT
   )
   .generate();
 
-const cardsMock = faker
+export const cardsMock = faker
   .array(
     faker.object<Card>({
       cardID: faker.unique(cardIDs),
@@ -78,7 +76,7 @@ const cardsMock = faker
   )
   .generate();
 
-const transactionsMock = faker
+export const transactionsMock = faker
   .array(
     faker.object<Transaction>({
       cardID: faker.enums(cardIDs),
@@ -92,195 +90,10 @@ const transactionsMock = faker
       ),
       merchantInfo: faker.enums(merchantInfo),
     }),
-    100
+    TRANSACTION_COUNT
   )
   .generate()
   .sort(
     (t1, t2) =>
       t2.transactionDate.getTime() - t1.transactionDate.getTime()
   );
-
-const fakeEndpoinst = {
-  user: null,
-  '/filters/transactions': (_, { cardAccount }) => {
-    const transactions = transactionsMock.filter(
-      (transaction) => transaction.cardAccount === cardAccount
-    );
-
-    const filters = transactions.reduce(
-      (filters, { cardID, currency }) => {
-        filters.cardID.add(cardID);
-        filters.currency.add(currency);
-        return filters;
-      },
-      {
-        cardID: new Set<number>(),
-        currency: new Set<string>(),
-      }
-    );
-    return {
-      cardID: Array.from(filters.cardID),
-      currency: Array.from(filters.currency),
-    };
-  },
-  '/filters/cards': (_, { cardAccount }) => {
-    const cards = cardsMock.filter(
-      (card) => card.cardAccount === cardAccount
-    );
-
-    const filters = cards.reduce(
-      (filters, { cardID, cardAccount, currency, status }) => {
-        filters.cardID.add(cardID);
-        filters.cardAccount.add(cardAccount);
-        filters.currency.add(currency);
-        filters.status.add(status);
-        return filters;
-      },
-      {
-        cardID: new Set<number>(),
-        cardAccount: new Set<number>(),
-        currency: new Set<string>(),
-        status: new Set<string>(),
-      }
-    );
-
-    return {
-      cardID: Array.from(filters.cardID),
-      cardAccount: Array.from(filters.cardAccount),
-      currency: Array.from(filters.currency),
-      status: Array.from(filters.status),
-    };
-  },
-  '/card': (_, { id, cardAccount }) => {
-    return cardsMock
-      .filter((card) => card.cardAccount === cardAccount)
-      .find((card) => card.cardID === id);
-  },
-  '/cards': (
-    _,
-    { page = 1, cardAccount, status, currency, cardID }
-  ) => {
-    const cards = cardsMock.filter((card) => {
-      if (card.cardAccount !== cardAccount) {
-        return false;
-      }
-
-      if (currency && !currency.includes(card.currency)) {
-        return false;
-      }
-
-      if (status && !status.includes(card.status)) {
-        return false;
-      }
-      if (cardID && !cardID.includes(card.cardID)) {
-        return false;
-      }
-      return true;
-    });
-
-    return {
-      page,
-      pageCount: Math.ceil(cards.length / CARDS_PER_PAGE),
-      data: cards.slice(
-        (page - 1) * CARDS_PER_PAGE,
-        page * CARDS_PER_PAGE
-      ),
-    };
-  },
-  '/user': () => {
-    const index = random.int(0, users.length);
-
-    return users[index];
-  },
-  '/transaction': (_, { id, cardAccount }) => {
-    return transactionsMock
-      .filter(
-        (transaction) => transaction.cardAccount === cardAccount
-      )
-      .find((transaction) => transaction.transactionID === id);
-  },
-  '/transactions': (
-    _,
-    { page = 1, cardAccount, currency, cardID, date, amount }
-  ) => {
-    const transactions = transactionsMock.filter((transaction) => {
-      if (transaction.cardAccount !== cardAccount) {
-        return false;
-      }
-
-      if (currency && !currency.includes(transaction.currency)) {
-        return false;
-      }
-
-      if (cardID && !cardID.includes(transaction.cardID)) {
-        return false;
-      }
-
-      if (date) {
-        const [from, to] = date;
-        const transactionTime = transaction.transactionDate.getTime();
-        if (from !== '') {
-          const fromTime = new Date(from).getTime();
-          if (transactionTime < fromTime) {
-            return false;
-          }
-        }
-
-        if (to !== '') {
-          const fromTime = new Date(to).getTime();
-          if (transactionTime > fromTime) {
-            return false;
-          }
-        }
-      }
-
-      if (amount) {
-        const [from, to] = amount;
-
-        if (from !== '') {
-          const fromAmount = parseInt(from, 10);
-          if (transaction.amount < fromAmount) {
-            return false;
-          }
-        }
-
-        if (to !== '') {
-          const fromAmount = parseInt(to, 10);
-          if (transaction.amount < fromAmount) {
-            return false;
-          }
-        }
-      }
-
-      return true;
-    });
-
-    return {
-      page,
-      pageCount: Math.ceil(
-        transactions.length / TRANSACTION_PER_PAGE
-      ),
-      data: transactions.slice(
-        (page - 1) * TRANSACTION_PER_PAGE,
-        page * TRANSACTION_PER_PAGE
-      ),
-    };
-  },
-};
-
-export const fakeAxios = {
-  post<R>(url: string, payload: Record<string, any> = {}) {
-    const endpoin = fakeEndpoinst[url];
-    if (!endpoin) {
-      throw new Error(`Cant find endpoints ${url}`);
-    }
-    const timeout = random.int(200, 700);
-    const response: R = endpoin(url, payload);
-    console.log({ url, response, payload, timeout });
-    return new Promise<R>((res) => {
-      setTimeout(() => {
-        res(response);
-      }, timeout);
-    });
-  },
-};

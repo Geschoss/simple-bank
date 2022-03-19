@@ -32,7 +32,7 @@ export const App = () => {
         ) : (
           <Routes>
             <Route path="/" element={<Pages.Home />} />
-            {/* Cards */}
+
             <Route path="/cards" element={<Pages.CardsPage />} />
             <Route
               path="/cards/:cardID"

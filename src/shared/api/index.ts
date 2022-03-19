@@ -1,4 +1,4 @@
-import { fakeAxios } from './mocks';
+import { fakeAxios } from './server';
 
 // axios type
 type HTTP = {
@@ -6,7 +6,7 @@ type HTTP = {
 };
 
 const apiSDK = (http: HTTP) => {
-  // somethinf like token
+  // somethink like token
   let cardAccount = -1;
   return {
     post<R>(url: string, payload?: Record<string, any>) {
